@@ -1,0 +1,74 @@
+1. QUERY: Return medium risk clients, the types of appointments they had, and which employee they saw.
+
+SELECT DISTINCT c.lname, c.Risk_level, v.Appointment, v.Eid
+FROM client AS c
+JOIN visits AS v ON c.Cid = v.Cid
+WHERE c.Risk_level = 'Medium';
+
+RESULT SET:
+
+lname|Risk_level|Appointment|Eid
+Martinez|Medium|Follow_up|2
+Brown|Medium|Lactation_consultation|3
+Smith|Medium|Follow_up|5
+
+
+2. QUERY: Return rental pump id and pressure test date of the pump that failed the pressure test. 
+
+SELECT DISTINCT ren.R_pid, rep.Pressure_test
+FROM report AS rep 
+JOIN rental AS ren ON rep.pid = ren.R_pid
+WHERE ren.fail = true
+    AND rep.Pressure_test IS NOT NULL;
+
+RESULT SET:
+
+R_pid|Pressure_test
+105|2025-03-06
+
+3. QUERY: Return when a breastpump transaction form was not completed and by which employee.
+
+SELECT DISTINCT e.lname, e.fname, bp.cid 
+FROM breastpump AS bp
+JOIN visits AS v ON bp.cid = v.Cid
+JOIN employee AS e ON v.Eid = e.Eid
+WHERE bp.bp_transaction_form = FALSE;
+
+RESULT SET:
+
+lname|Fname|Cid
+Williams|Sarah|13
+Fernandez|Maria|15
+
+
+4. QUERY: Return clients ordered by alphebetic order who got a Pump in Style and their double pump kit size.
+
+SELECT DISTINCT c.lname, c.fname, o.DK_small, o.DK_medium, o.DK_large
+FROM client AS c
+JOIN breastpump AS bp ON c.Cid = bp.Cid 
+JOIN own AS o ON bp.pid = o.o_pid
+WHERE bp.model = 'Pump in Style'
+ORDER BY c.lname ASC;
+
+RESULT SET:
+
+lname|Fname|DK_small|DK_medium|DK_large
+Martinez|Olivia|1|0|0
+Smith|Leah|0|1|0
+
+
+5. QUERY: Return employees who have certifications and the certification name.
+
+SELECT DISTINCT e.lname, e.fname, cert.cert_name
+FROM BF_Coordinator AS bf
+JOIN employee AS e ON e.Eid = bf.BF_Eid
+JOIN certification AS cert ON bf.BF_Eid = cert.BF_Eid;
+
+RESULT SET:
+
+lname|Fname|cert_name
+Fernandez|Maria|Lactation consultant
+Fernandez|Maria|Registered Dietitian
+
+
+
